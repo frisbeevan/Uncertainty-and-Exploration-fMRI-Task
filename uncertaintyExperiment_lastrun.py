@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 """
-This experiment was created using PsychoPy2 Experiment Builder (v1.83.04), Fri Jul  6 17:48:33 2018
+This experiment was created using PsychoPy2 Experiment Builder (v1.83.04), Fri Jul  6 19:37:59 2018
 If you publish work using this script please cite the relevant PsychoPy publications
   Peirce, JW (2007) PsychoPy - Psychophysics software in Python. Journal of Neuroscience Methods, 162(1-2), 8-13.
   Peirce, JW (2009) Generating stimuli for neuroscience using PsychoPy. Frontiers in Neuroinformatics, 2:10. doi: 10.3389/neuro.11.010.2008
@@ -46,7 +46,7 @@ endExpNow = False  # flag for 'escape' or other condition => quit the exp
 # Start Code - component code to be run before the window creation
 
 # Setup the Window
-win = visual.Window(size=(1440, 900), fullscr=True, screen=0, allowGUI=False, allowStencil=False,
+win = visual.Window(size=(1280, 1024), fullscr=True, screen=0, allowGUI=False, allowStencil=False,
     monitor='testMonitor', color=[0,0,0], colorSpace='rgb',
     blendMode='avg', useFBO=True,
     )
@@ -280,9 +280,9 @@ R_condition = visual.TextStim(win=win, ori=0, name='R_condition',
     color='white', colorSpace='rgb', opacity=1,
     depth=-11.0)
 fixationITIcross = visual.TextStim(win=win, ori=0, name='fixationITIcross',
-    text='+',    font='Arial',
+    text=u'+',    font=u'Arial',
     pos=[0, 0], height=0.1, wrapWidth=None,
-    color='white', colorSpace='rgb', opacity=1,
+    color=u'white', colorSpace='rgb', opacity=1,
     depth=-12.0)
 ITI = core.StaticPeriod(win=win, screenHz=expInfo['frameRate'], name='ITI')
 
@@ -566,7 +566,7 @@ for thisRun in runs:
     t = 0
     fixationCrossClock.reset()  # clock 
     frameN = -1
-    routineTimer.add(1.000000)
+    routineTimer.add(10.000000)
     # update component parameters for each repeat
     # keep track of which components have finished
     fixationCrossComponents = []
@@ -589,7 +589,7 @@ for thisRun in runs:
             fixationCross1.tStart = t  # underestimates by a little under one frame
             fixationCross1.frameNStart = frameN  # exact frame index
             fixationCross1.setAutoDraw(True)
-        if fixationCross1.status == STARTED and t >= (0.0 + (1-win.monitorFramePeriod*0.75)): #most of one frame period left
+        if fixationCross1.status == STARTED and t >= (0.0 + (10-win.monitorFramePeriod*0.75)): #most of one frame period left
             fixationCross1.setAutoDraw(False)
         
         # check if all components have finished
@@ -637,7 +637,7 @@ for thisRun in runs:
         t = 0
         newBlockClock.reset()  # clock 
         frameN = -1
-        routineTimer.add(1.000000)
+        routineTimer.add(3.000000)
         # update component parameters for each repeat
         # keep track of which components have finished
         newBlockComponents = []
@@ -660,7 +660,7 @@ for thisRun in runs:
                 text.tStart = t  # underestimates by a little under one frame
                 text.frameNStart = frameN  # exact frame index
                 text.setAutoDraw(True)
-            if text.status == STARTED and t >= (0.0 + (1-win.monitorFramePeriod*0.75)): #most of one frame period left
+            if text.status == STARTED and t >= (0.0 + (3-win.monitorFramePeriod*0.75)): #most of one frame period left
                 text.setAutoDraw(False)
             
             # check if all components have finished
@@ -689,7 +689,7 @@ for thisRun in runs:
         t = 0
         ibiFixationCrossClock.reset()  # clock 
         frameN = -1
-        routineTimer.add(1.000000)
+        routineTimer.add(3.000000)
         # update component parameters for each repeat
         # keep track of which components have finished
         ibiFixationCrossComponents = []
@@ -712,7 +712,7 @@ for thisRun in runs:
                 ibifixationCross.tStart = t  # underestimates by a little under one frame
                 ibifixationCross.frameNStart = frameN  # exact frame index
                 ibifixationCross.setAutoDraw(True)
-            if ibifixationCross.status == STARTED and t >= (0.0 + (1-win.monitorFramePeriod*0.75)): #most of one frame period left
+            if ibifixationCross.status == STARTED and t >= (0.0 + (3-win.monitorFramePeriod*0.75)): #most of one frame period left
                 ibifixationCross.setAutoDraw(False)
             
             # check if all components have finished
@@ -911,7 +911,7 @@ for thisRun in runs:
                 
                 # show user some feedback, and log the ISI / feedback times
                 #
-                print 'wtf', t, (respTime + isiDuration), (t >= respTime + isiDuration), isiDuration, feedbackDuration
+                # print 'wtf', t, (respTime + isiDuration), (t >= respTime + isiDuration), isiDuration, feedbackDuration
                 
                 if t >= respTime + isiDuration and not isFeedbackShown:
                     isFeedbackShown = True
@@ -1052,7 +1052,7 @@ for thisRun in runs:
                     fixationITIcross.tStart = t  # underestimates by a little under one frame
                     fixationITIcross.frameNStart = frameN  # exact frame index
                     fixationITIcross.setAutoDraw(True)
-                if fixationITIcross.status == STARTED and t >= (respTime + isiDuration + feedbackDuration + (3-win.monitorFramePeriod*0.75)): #most of one frame period left
+                if fixationITIcross.status == STARTED and t >= (respTime + isiDuration + feedbackDuration + (actualItiDuration-win.monitorFramePeriod*0.75)): #most of one frame period left
                     fixationITIcross.setAutoDraw(False)
                 # *ISI* period
                 if t >= respTime and ISI.status == NOT_STARTED:
@@ -1067,7 +1067,7 @@ for thisRun in runs:
                     # keep track of start time/frame for later
                     ITI.tStart = t  # underestimates by a little under one frame
                     ITI.frameNStart = frameN  # exact frame index
-                    ITI.start(itiDuration)
+                    ITI.start(actualItiDuration)
                 elif ITI.status == STARTED: #one frame should pass before updating params and completing
                     ITI.complete() #finish the static period
                 
@@ -1127,7 +1127,7 @@ for thisRun in runs:
 t = 0
 fixationCrossClock.reset()  # clock 
 frameN = -1
-routineTimer.add(1.000000)
+routineTimer.add(10.000000)
 # update component parameters for each repeat
 # keep track of which components have finished
 fixationCrossComponents = []
@@ -1150,7 +1150,7 @@ while continueRoutine and routineTimer.getTime() > 0:
         fixationCross1.tStart = t  # underestimates by a little under one frame
         fixationCross1.frameNStart = frameN  # exact frame index
         fixationCross1.setAutoDraw(True)
-    if fixationCross1.status == STARTED and t >= (0.0 + (1-win.monitorFramePeriod*0.75)): #most of one frame period left
+    if fixationCross1.status == STARTED and t >= (0.0 + (10-win.monitorFramePeriod*0.75)): #most of one frame period left
         fixationCross1.setAutoDraw(False)
     
     # check if all components have finished
