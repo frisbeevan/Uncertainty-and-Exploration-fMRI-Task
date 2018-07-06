@@ -17,8 +17,12 @@ sd = [0, math.sqrt(16)]
 choiceDuration = 2
 feedbackDuration = 1
 ibi = 6 #interblock interval *BEFORE* each block starts IMPORTANT: This should match psychopy
-iri = 10 #interrun interval *BEFORE* each run starts IMPORTANT: This should match psychopy
-
+fixCrossAtRunStart = 10 #interrun interval *BEFORE* each run starts IMPORTANT: This should match psychopy
+isiRange = [1,3]
+itiRange = [5,7]
+avgIsi = (isiRange[0] + isiRange[1]) / 2
+avgIti = (itiRange[0] + itiRange[1]) / 2
+fixCrossAtRunEnd = 10
 
 
 def nrand(m,sd):
@@ -28,11 +32,13 @@ def nrand(m,sd):
         return round(normal(m, sd))
 
 def gen(pilot):
+    expectedRunLen = fixCrossAtRunStart + nBlocks*(ibi + nTrials * (choiceDuration + feedbackDuration + avgIsi + avgIti)) + fixCrossAtRunEnd
+    print 'expectedRunLen = ', expectedRunLen
     for s in range(nSubjects + 1): #subject zero is the practice subject
         if pilot:
-        	subjId = '%sP%03d' % (prefix,s)
+            subjId = '%sP%03d' % (prefix,s)
         else:
-        	subjId = '%s%03d' % (prefix,s)
+            subjId = '%s%03d' % (prefix,s)
         subjFname = os.path.join('csv', '%s.csv' % subjId)
         with open(subjFname, 'w') as subjF:
             subjF.write('runFilename\n')
@@ -47,13 +53,33 @@ def gen(pilot):
                     assert len(c) == nBlocks #just to make sure length of these = 4
                     assert len(conds) == nBlocks
                     if pilot:
+                        assert False
                         isiDuration = uniform(1, 3, (nBlocks, nTrials))
                         itiDuration = uniform(2, 4, (nBlocks, nTrials))
                     else:
-                        isiDuration = uniform(1, 3, (nBlocks, nTrials))
-                        itiDuration = uniform(5, 7, (nBlocks, nTrials))
+                        isiDuration = uniform(isiRange[0], isiRange[1], (nBlocks, nTrials))
+                        itiDuration = uniform(itiRange[0], itiRange[1], (nBlocks, nTrials))
 
-                    stimOnset = iri 
+
+                    fixedTimes = fixCrossAtRunStart + nBlocks*(ibi + nTrials * (choiceDuration + feedbackDuration)) + fixCrossAtRunEnd
+
+                    actualRunLen = sum(sum(isiDuration)) + sum(sum(itiDuration)) + fixedTimes
+
+                    print 'actualRunLen = ', actualRunLen
+                    ratio = (expectedRunLen - fixedTimes) / (actualRunLen - fixedTimes)
+                    print 'ratio = ', ratio
+
+                    isiDuration = isiDuration * ratio
+
+                    itiDuration = itiDuration * ratio
+
+                    newActualRunLen = sum(sum(isiDuration)) + sum(sum(itiDuration)) + fixedTimes
+
+                    print 'newActualRunLen = ', newActualRunLen
+
+
+
+                    stimOnset = fixCrossAtRunStart
 
                     colors = [0,1,2,3,4,5,6,7] #shuffles color palette so that each option in each block has a different color
                     shuffle(colors)
@@ -100,7 +126,7 @@ if __name__ == "__main__":
 
     seed(129523)
 
-    gen(True)
+#    gen(True)
     gen(False)
 
     
