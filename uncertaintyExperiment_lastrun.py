@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 """
-This experiment was created using PsychoPy2 Experiment Builder (v1.83.04), Wed Jul  4 10:47:01 2018
+This experiment was created using PsychoPy2 Experiment Builder (v1.83.04), Fri Jul  6 17:48:33 2018
 If you publish work using this script please cite the relevant PsychoPy publications
   Peirce, JW (2007) PsychoPy - Psychophysics software in Python. Journal of Neuroscience Methods, 162(1-2), 8-13.
   Peirce, JW (2009) Generating stimuli for neuroscience using PsychoPy. Frontiers in Neuroinformatics, 2:10. doi: 10.3389/neuro.11.010.2008
@@ -888,10 +888,10 @@ for thisRun in runs:
                     #
                     if responseKey.keys == '1': # left choice
                         leftHighlight.opacity = 1
-                        leftAnswerText.opacity = 1
+                #        leftAnswerText.opacity = 1
                     elif responseKey.keys == '2': # right choice
                         rightHighlight.opacity = 1
-                        rightAnswerText.opacity= 1
+                #        rightAnswerText.opacity= 1
                     else:
                         assert False, 'Can only have one response, left or right choice'
                     
@@ -911,6 +911,8 @@ for thisRun in runs:
                 
                 # show user some feedback, and log the ISI / feedback times
                 #
+                print 'wtf', t, (respTime + isiDuration), (t >= respTime + isiDuration), isiDuration, feedbackDuration
+                
                 if t >= respTime + isiDuration and not isFeedbackShown:
                     isFeedbackShown = True
                     print '      Feedback time: ', t
@@ -927,6 +929,21 @@ for thisRun in runs:
                         # no response was made => timeout
                         #
                         fixationITIcross.setColor('red')
+                    else: 
+                        if responseKey.keys == '1': # left choice
+                            leftAnswerText.opacity = 1
+                        elif responseKey.keys == '2': # right choice
+                
+                            rightAnswerText.opacity= 1
+                        else:
+                            assert False, 'Can only have one response, left or right choice'
+                
+                        # hack to re-render the text with new opacity
+                        #
+                        leftHighlight.draw()
+                        rightHighlight.draw()
+                        leftAnswerText.setText(leftAnswerText.text)
+                        rightAnswerText.setText(rightAnswerText.text)
                 
                 
                 
@@ -1038,19 +1055,19 @@ for thisRun in runs:
                 if fixationITIcross.status == STARTED and t >= (respTime + isiDuration + feedbackDuration + (3-win.monitorFramePeriod*0.75)): #most of one frame period left
                     fixationITIcross.setAutoDraw(False)
                 # *ISI* period
-                if t >= 2 and ISI.status == NOT_STARTED:
+                if t >= respTime and ISI.status == NOT_STARTED:
                     # keep track of start time/frame for later
                     ISI.tStart = t  # underestimates by a little under one frame
                     ISI.frameNStart = frameN  # exact frame index
-                    ISI.start(1)
+                    ISI.start(isiDuration)
                 elif ISI.status == STARTED: #one frame should pass before updating params and completing
                     ISI.complete() #finish the static period
                 # *ITI* period
-                if t >= 4 and ITI.status == NOT_STARTED:
+                if t >= respTime + isiDuration + feedbackDuration and ITI.status == NOT_STARTED:
                     # keep track of start time/frame for later
                     ITI.tStart = t  # underestimates by a little under one frame
                     ITI.frameNStart = frameN  # exact frame index
-                    ITI.start(1)
+                    ITI.start(itiDuration)
                 elif ITI.status == STARTED: #one frame should pass before updating params and completing
                     ITI.complete() #finish the static period
                 
