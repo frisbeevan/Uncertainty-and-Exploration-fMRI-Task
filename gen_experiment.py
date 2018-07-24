@@ -5,7 +5,7 @@ from numpy.random import shuffle, seed, normal, uniform
 import numpy as np
 import math
 
-nSubjects = 2
+nSubjects = 60
 nRuns = 8
 nBlocks = 4
 nTrials = 10
@@ -40,12 +40,27 @@ def gen(pilot):
         else:
             subjId = '%s%03d' % (prefix,s)
         subjFname = os.path.join('csv', '%s.csv' % subjId)
+        subjFname_1 = os.path.join('csv', '%s_1.csv' % subjId)
+        subjFname_2 = os.path.join('csv', '%s_2.csv' % subjId)
+
         with open(subjFname, 'w') as subjF:
             subjF.write('runFilename\n')
+
+            subjF_1 = open(subjFname_1, 'w')
+            subjF_1.write('runFilename\n')
+
+            subjF_2 = open(subjFname_2, 'w')
+            subjF_2.write('runFilename\n')
 
             for r in range(1, nRuns + 1): 
                 runFname = os.path.join('csv', '%s_run%d.csv' % (subjId, r))
                 subjF.write(runFname +'\n')
+                if r <= 4: 
+                    subjF_1.write(runFname + '\n')
+                else:
+                    subjF_2.write(runFname + '\n')
+
+
                 with open(runFname, 'w') as runF:
                     runF.write('blockFilename\n')
                     c = [0,1,2,3]  # c is order of conditions
@@ -92,7 +107,8 @@ def gen(pilot):
                         with open(blockFname, 'w') as blockF:
                             cols = ['subjectId', 'runId', 'blockId', 'trialId', 'condition', 'leftAnswer',
                                 'rightAnswer', 'choiceDuration', 'isiDuration', 'feedbackDuration',
-                                'itiDuration', 'stimOnset', 'itiOffset', 'leftColor', 'rightColor']
+                                'itiDuration', 'stimOnset', 'itiOffset', 'leftColor', 'rightColor', 
+                                'mu1', 'mu2', 'sd1', 'sd2']
                             blockF.write(','.join(cols) + '\n')
                             k1 = conds[c[b-1]][0]
                             k2 = conds[c[b-1]][1]
@@ -115,7 +131,7 @@ def gen(pilot):
                                 row = [subjId, r, b, t, condition, leftAnswer, 
                                     rightAnswer, choiceDuration, isiDuration[b-1, t-1], feedbackDuration, 
                                     itiDuration[b-1, t-1], stimOnset, itiOffset, 
-                                    leftColor, rightColor]
+                                    leftColor, rightColor, mu[0], mu[1], sd[k1], sd[k2]]
                                 blockF.write(','.join(str(x) for x in row) + '\n')
                                 stimOnset = itiOffset
 

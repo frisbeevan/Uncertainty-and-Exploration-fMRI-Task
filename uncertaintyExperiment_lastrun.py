@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 """
-This experiment was created using PsychoPy2 Experiment Builder (v1.83.04), Fri Jul  6 19:37:59 2018
+This experiment was created using PsychoPy2 Experiment Builder (v1.83.04), Tue Jul 24 17:47:18 2018
 If you publish work using this script please cite the relevant PsychoPy publications
   Peirce, JW (2007) PsychoPy - Psychophysics software in Python. Journal of Neuroscience Methods, 162(1-2), 8-13.
   Peirce, JW (2009) Generating stimuli for neuroscience using PsychoPy. Frontiers in Neuroinformatics, 2:10. doi: 10.3389/neuro.11.010.2008
@@ -46,7 +46,7 @@ endExpNow = False  # flag for 'escape' or other condition => quit the exp
 # Start Code - component code to be run before the window creation
 
 # Setup the Window
-win = visual.Window(size=(1280, 1024), fullscr=True, screen=0, allowGUI=False, allowStencil=False,
+win = visual.Window(size=(1440, 900), fullscr=True, screen=0, allowGUI=False, allowStencil=False,
     monitor='testMonitor', color=[0,0,0], colorSpace='rgb',
     blendMode='avg', useFBO=True,
     )
@@ -60,7 +60,7 @@ else:
 # Initialize components for Routine "instructions"
 instructionsClock = core.Clock()
 instrText = visual.TextStim(win=win, ori=0, name='instrText',
-    text='Press the LEFT or RIGHT keys\n      to make your choice.',    font='Arial',
+    text='Press "1" for left box or "2" for right box\n             to make your choice.',    font='Arial',
     pos=[0, 0], height=0.07, wrapWidth=None,
     color='white', colorSpace='rgb', opacity=1,
     depth=0.0)
@@ -93,7 +93,7 @@ Now press space to begin the first game.''' % (leftPressInstr, rightPressInstr)
 # Initialize components for Routine "newRun"
 newRunClock = core.Clock()
 runInstr = visual.TextStim(win=win, ori=0, name='runInstr',
-    text='the text is set manually\n',    font='Arial',
+    text='We are about to begin a new round.\n\n        Are you ready to begin?',    font='Arial',
     pos=[0, 0], height=0.07, wrapWidth=None,
     color='white', colorSpace='rgb', opacity=1,
     depth=0.0)
@@ -127,7 +127,7 @@ elif trigger == 'usb':
 fixationCrossClock = core.Clock()
 fixationCross1 = visual.TextStim(win=win, ori=0, name='fixationCross1',
     text='+',    font='Arial',
-    pos=[0, 0], height=0.1, wrapWidth=None,
+    pos=[0, 0], height=0.15, wrapWidth=None,
     color='white', colorSpace='rgb', opacity=1,
     depth=0.0)
 
@@ -143,13 +143,17 @@ text = visual.TextStim(win=win, ori=0, name='text',
 ibiFixationCrossClock = core.Clock()
 ibifixationCross = visual.TextStim(win=win, ori=0, name='ibifixationCross',
     text='+',    font='Arial',
-    pos=[0, 0], height=0.1, wrapWidth=None,
+    pos=[0, 0], height=0.15, wrapWidth=None,
     color='white', colorSpace='rgb', opacity=1,
     depth=0.0)
 
 # Initialize components for Routine "trial"
 trialClock = core.Clock()
+#from psychopy import logging
+#logging.console.setLevel(logging.DEBUG)
+
 import time
+import numpy as np
 import seaborn as sns
 
 # constants
@@ -167,6 +171,8 @@ expInfo['expStartWallTime'] = time.ctime()
 # color palette
 palette = sns.color_palette("hls", 8)
 
+
+rewards = []
 # psychopy only writes the data at the very end
 # we want data with intermediate results
 # so we have this thing that dumps to a .wtf-file
@@ -280,9 +286,9 @@ R_condition = visual.TextStim(win=win, ori=0, name='R_condition',
     color='white', colorSpace='rgb', opacity=1,
     depth=-11.0)
 fixationITIcross = visual.TextStim(win=win, ori=0, name='fixationITIcross',
-    text=u'+',    font=u'Arial',
-    pos=[0, 0], height=0.1, wrapWidth=None,
-    color=u'white', colorSpace='rgb', opacity=1,
+    text='+',    font='Arial',
+    pos=[0, 0], height=0.15, wrapWidth=None,
+    color='white', colorSpace='rgb', opacity=1,
     depth=-12.0)
 ITI = core.StaticPeriod(win=win, screenHz=expInfo['frameRate'], name='ITI')
 
@@ -290,6 +296,14 @@ ITI = core.StaticPeriod(win=win, screenHz=expInfo['frameRate'], name='ITI')
 fixationCrossClock = core.Clock()
 fixationCross1 = visual.TextStim(win=win, ori=0, name='fixationCross1',
     text='+',    font='Arial',
+    pos=[0, 0], height=0.15, wrapWidth=None,
+    color='white', colorSpace='rgb', opacity=1,
+    depth=0.0)
+
+# Initialize components for Routine "Thank_You_"
+Thank_You_Clock = core.Clock()
+thankYouText = visual.TextStim(win=win, ori=0, name='thankYouText',
+    text='Any text\n\nincluding line breaks',    font='Arial',
     pos=[0, 0], height=0.1, wrapWidth=None,
     color='white', colorSpace='rgb', opacity=1,
     depth=0.0)
@@ -766,6 +780,11 @@ for thisRun in runs:
             trials.addData('trialStartWallTime', time.ctime())
             trials.addData('actualChoiceOnset', fmriClock.getTime())
             
+            #trials.addData('mu1', mu1)
+            #trials.addData('mu2', mu2)
+            #trials.addData('sd1', sd1)
+            #trials.addData('sd2', sd2)
+            
             # ------------------ Feedback code -------------------
             #
             
@@ -825,6 +844,7 @@ for thisRun in runs:
             print blocks.nTotal
             assert blocks.nTotal == 4 # if number of blocks changes, initialize more colors in the palette in Begin Experiment
             
+            reward = 0
             
             
             responseKey = event.BuilderKeyResponse()  # create an object of type KeyResponse
@@ -888,9 +908,11 @@ for thisRun in runs:
                     #
                     if responseKey.keys == '1': # left choice
                         leftHighlight.opacity = 1
+                        reward = leftAnswer
                 #        leftAnswerText.opacity = 1
                     elif responseKey.keys == '2': # right choice
                         rightHighlight.opacity = 1
+                        reward = rightAnswer
                 #        rightAnswerText.opacity= 1
                     else:
                         assert False, 'Can only have one response, left or right choice'
@@ -1096,6 +1118,15 @@ for thisRun in runs:
             #
             trials.addData('trialEndWallTime', time.ctime())
             trials.addData('actualItiOffset', fmriClock.getTime())
+            
+            trials.addData('reward', reward)
+            rewards.append(reward)
+            
+            
+            print 'Total number of rewards:', len(rewards)
+            
+            r = np.random.choice(rewards)
+            print 'subject reward:', r
             flushEntries()
             # check responses
             if responseKey.keys in ['', [], None]:  # No response was made
@@ -1118,46 +1149,119 @@ for thisRun in runs:
         
     # completed 1 repeats of 'blocks'
     
+    
+    #------Prepare to start Routine "fixationCross"-------
+    t = 0
+    fixationCrossClock.reset()  # clock 
+    frameN = -1
+    routineTimer.add(10.000000)
+    # update component parameters for each repeat
+    # keep track of which components have finished
+    fixationCrossComponents = []
+    fixationCrossComponents.append(fixationCross1)
+    for thisComponent in fixationCrossComponents:
+        if hasattr(thisComponent, 'status'):
+            thisComponent.status = NOT_STARTED
+    
+    #-------Start Routine "fixationCross"-------
+    continueRoutine = True
+    while continueRoutine and routineTimer.getTime() > 0:
+        # get current time
+        t = fixationCrossClock.getTime()
+        frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
+        # update/draw components on each frame
+        
+        # *fixationCross1* updates
+        if t >= 0.0 and fixationCross1.status == NOT_STARTED:
+            # keep track of start time/frame for later
+            fixationCross1.tStart = t  # underestimates by a little under one frame
+            fixationCross1.frameNStart = frameN  # exact frame index
+            fixationCross1.setAutoDraw(True)
+        if fixationCross1.status == STARTED and t >= (0.0 + (10-win.monitorFramePeriod*0.75)): #most of one frame period left
+            fixationCross1.setAutoDraw(False)
+        
+        # check if all components have finished
+        if not continueRoutine:  # a component has requested a forced-end of Routine
+            break
+        continueRoutine = False  # will revert to True if at least one component still running
+        for thisComponent in fixationCrossComponents:
+            if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
+                continueRoutine = True
+                break  # at least one component has not yet finished
+        
+        # check for quit (the Esc key)
+        if endExpNow or event.getKeys(keyList=["escape"]):
+            core.quit()
+        
+        # refresh the screen
+        if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
+            win.flip()
+    
+    #-------Ending Routine "fixationCross"-------
+    for thisComponent in fixationCrossComponents:
+        if hasattr(thisComponent, "setAutoDraw"):
+            thisComponent.setAutoDraw(False)
     thisExp.nextEntry()
     
 # completed 1 repeats of 'runs'
 
 
-#------Prepare to start Routine "fixationCross"-------
+#------Prepare to start Routine "Thank_You_"-------
 t = 0
-fixationCrossClock.reset()  # clock 
+Thank_You_Clock.reset()  # clock 
 frameN = -1
-routineTimer.add(10.000000)
 # update component parameters for each repeat
+key_resp_4 = event.BuilderKeyResponse()  # create an object of type KeyResponse
+key_resp_4.status = NOT_STARTED
 # keep track of which components have finished
-fixationCrossComponents = []
-fixationCrossComponents.append(fixationCross1)
-for thisComponent in fixationCrossComponents:
+Thank_You_Components = []
+Thank_You_Components.append(thankYouText)
+Thank_You_Components.append(key_resp_4)
+for thisComponent in Thank_You_Components:
     if hasattr(thisComponent, 'status'):
         thisComponent.status = NOT_STARTED
 
-#-------Start Routine "fixationCross"-------
+#-------Start Routine "Thank_You_"-------
 continueRoutine = True
-while continueRoutine and routineTimer.getTime() > 0:
+while continueRoutine:
     # get current time
-    t = fixationCrossClock.getTime()
+    t = Thank_You_Clock.getTime()
     frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
     # update/draw components on each frame
     
-    # *fixationCross1* updates
-    if t >= 0.0 and fixationCross1.status == NOT_STARTED:
+    # *thankYouText* updates
+    if t >= 0.0 and thankYouText.status == NOT_STARTED:
         # keep track of start time/frame for later
-        fixationCross1.tStart = t  # underestimates by a little under one frame
-        fixationCross1.frameNStart = frameN  # exact frame index
-        fixationCross1.setAutoDraw(True)
-    if fixationCross1.status == STARTED and t >= (0.0 + (10-win.monitorFramePeriod*0.75)): #most of one frame period left
-        fixationCross1.setAutoDraw(False)
+        thankYouText.tStart = t  # underestimates by a little under one frame
+        thankYouText.frameNStart = frameN  # exact frame index
+        thankYouText.setAutoDraw(True)
+    
+    # *key_resp_4* updates
+    if t >= 0.0 and key_resp_4.status == NOT_STARTED:
+        # keep track of start time/frame for later
+        key_resp_4.tStart = t  # underestimates by a little under one frame
+        key_resp_4.frameNStart = frameN  # exact frame index
+        key_resp_4.status = STARTED
+        # keyboard checking is just starting
+        win.callOnFlip(key_resp_4.clock.reset)  # t=0 on next screen flip
+        event.clearEvents(eventType='keyboard')
+    if key_resp_4.status == STARTED:
+        theseKeys = event.getKeys(keyList=['y', 'n', 'left', 'right', 'space'])
+        
+        # check for quit:
+        if "escape" in theseKeys:
+            endExpNow = True
+        if len(theseKeys) > 0:  # at least one key was pressed
+            key_resp_4.keys = theseKeys[-1]  # just the last key pressed
+            key_resp_4.rt = key_resp_4.clock.getTime()
+            # a response ends the routine
+            continueRoutine = False
     
     # check if all components have finished
     if not continueRoutine:  # a component has requested a forced-end of Routine
         break
     continueRoutine = False  # will revert to True if at least one component still running
-    for thisComponent in fixationCrossComponents:
+    for thisComponent in Thank_You_Components:
         if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
             continueRoutine = True
             break  # at least one component has not yet finished
@@ -1170,10 +1274,20 @@ while continueRoutine and routineTimer.getTime() > 0:
     if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
         win.flip()
 
-#-------Ending Routine "fixationCross"-------
-for thisComponent in fixationCrossComponents:
+#-------Ending Routine "Thank_You_"-------
+for thisComponent in Thank_You_Components:
     if hasattr(thisComponent, "setAutoDraw"):
         thisComponent.setAutoDraw(False)
+# check responses
+if key_resp_4.keys in ['', [], None]:  # No response was made
+   key_resp_4.keys=None
+# store data for thisExp (ExperimentHandler)
+thisExp.addData('key_resp_4.keys',key_resp_4.keys)
+if key_resp_4.keys != None:  # we had a response
+    thisExp.addData('key_resp_4.rt', key_resp_4.rt)
+thisExp.nextEntry()
+# the Routine "Thank_You_" was not non-slip safe, so reset the non-slip timer
+routineTimer.reset()
 
 
 
